@@ -96,6 +96,6 @@ def receive():
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
 
-os.system('cls')
+os.system('clear')
 print('Server is listening')
 receive()
