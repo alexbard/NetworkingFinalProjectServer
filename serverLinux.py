@@ -2,8 +2,8 @@ import socket
 import threading
 import os
 
-host = "localhost"
-port = 16000
+host = "3.133.55.21"
+port = 42536
 server_address = host, port
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -20,7 +20,7 @@ def broadcast(message, sender):
             client.send(message)
 
 def leave(client):
-    try:
+        client.send('LEAVE'.encode('ascii'))
         index = clients.index(client)
         clients.remove(client)
         username = usernames[index]
@@ -29,9 +29,7 @@ def leave(client):
         if client == admin:
             new_admin(client)
         broadcast(f'{username} has been removed from the chat'.encode('ascii'), client)
-        print(f'{username} is no longer connect to the server')
-    except ValueError:
-        pass
+        print(f'{username} is no longer connected to the server')
 
 def new_admin(client):
     global admin
@@ -39,7 +37,7 @@ def new_admin(client):
     if clients:
         admin = clients[0]
         admin_username = usernames[0]
-        admin.send(f'{nl}You are now the admin. Use "KICK <username>" to kick a user or "END" to end the chat.'.encode('ascii'))
+        admin.send(f'{nl}You are now the admin. Use "KICK <username>" to kick a user'.encode('ascii'))
         broadcast(f'{admin_username} is now the admin.', client)
 
 def handle(client):
@@ -63,9 +61,7 @@ def handle(client):
                 broadcast(message, client)
 
         except Exception as e:
-            leave(client)
-            pass
-            break
+            print(e)
 
 def kick_user(target_username):
     if target_username in usernames:
